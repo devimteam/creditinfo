@@ -57,9 +57,9 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse,
 			MessageId: &messageId,
 			RequestXml: &connector.RequestXml{
 				RequestXmlItem: &connector.RequestXmlItem{
-					Connector: &connector.Connector{
+					Connector: &connector.ConnectorRequest{
 						Id: &connectorGuuid,
-						Data: &connector.ConnectorData{
+						Data: &connector.ConnectorDataRequest{
 							Id: &dataId,
 							Request: &connector.Request{
 								Strategy: &connector.Strategy{
@@ -78,7 +78,7 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse,
 		},
 	})
 
-	fmt.Println(*response.QueryResult.MessageId)
+	fmt.Println(*response.QueryResult.ResponseXml.Response.Connector.Data.Response.Status)
 	fmt.Println(err)
 
 	if err != nil {

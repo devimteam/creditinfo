@@ -149,11 +149,15 @@ type MultiConnectorRequest struct {
 	Timeout       *Duration   `xml:"Timeout,omitempty" json:"Timeout,omitempty" yaml:"Timeout,omitempty"`
 }
 
+type ResponseXml struct {
+	Response Response `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Messages/Response response,omitempty" json:"response,omitempty" yaml:"response,omitempty"`
+}
+
 // MultiConnectorResponse was auto-generated from WSDL.
 type MultiConnectorResponse struct {
 	MessageId     *Guid        `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
 	OperationCode *string      `xml:"OperationCode,omitempty" json:"OperationCode,omitempty" yaml:"OperationCode,omitempty"`
-	ResponseXml   *interface{} `xml:"ResponseXml,omitempty" json:"ResponseXml,omitempty" yaml:"ResponseXml,omitempty"`
+	ResponseXml   *ResponseXml `xml:"ResponseXml,omitempty" json:"ResponseXml,omitempty" yaml:"ResponseXml,omitempty"`
 	Timestamp     *DateTime    `xml:"Timestamp,omitempty" json:"Timestamp,omitempty" yaml:"Timestamp,omitempty"`
 }
 
@@ -194,15 +198,15 @@ type Request struct {
 	Consent bool `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Connectors/INT/IdmStrategy/Request Consent,omitempty"`
 }
 
-type ConnectorData struct {
+type ConnectorDataRequest struct {
 	// Unique ID of request to particular connector.
 	Id      *Guid    `xml:"id,attr,omitempty"`
 	Request *Request `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Connectors/INT/IdmStrategy/Request request,omitempty"`
 }
 
-type Connector struct {
-	Data *ConnectorData `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Messages/Request data,omitempty"`
-	// Connector ID
+type ConnectorRequest struct {
+	Data *ConnectorDataRequest `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Messages/Request data,omitempty"`
+	// ConnectorRequest ID
 	Id *Guid `xml:"id,attr,omitempty"`
 	// If set to true it will try to retrieve data from cache.
 	UseCache bool `xml:"useCache,attr,omitempty"`
@@ -217,7 +221,7 @@ type Connector struct {
 }
 
 type RequestXmlItem struct {
-	Connector *Connector `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Messages/Request connector,omitempty"`
+	Connector *ConnectorRequest `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Messages/Request connector,omitempty"`
 }
 
 // RequestXml was auto-generated from WSDL.
@@ -244,8 +248,26 @@ type Timeout struct {
 type UnsupportedSecurityToken struct {
 }
 
+type ResultResponse struct {
+	Status   *string `xml:"status,omitempty"`
+	Infomsg  *string `xml:"infomsg,omitempty"`
+	Currency *string `xml:"currency,omitempty"`
+}
+
+type ConnectorDataResponse struct {
+	// Unique ID of request to particular connector.
+	Id       *Guid           `xml:"id,attr,omitempty"`
+	Response *ResultResponse `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Connectors/INT/IdmStrategy/Response response,omitempty"`
+}
+
+type ConnectorResponse struct {
+	Data *ConnectorDataResponse `xml:"data,omitempty"`
+}
+
 // Response was auto-generated from WSDL.
-type Response []interface{}
+type Response struct {
+	Connector ConnectorResponse `xml:"connector,omitempty"`
+}
 
 // Operation wrapper for BeginQuery.
 // OperationMultiConnectorService_BeginQuery_InputMessage was auto-generated

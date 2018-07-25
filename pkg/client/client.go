@@ -7,7 +7,7 @@ import (
 
 	"github.com/devimteam/creditinfo/pkg/connector"
 	"github.com/fiorix/wsdl2go/soap"
-	wsse "github.com/radoslav/soap"
+	wsse "github.com/casualcode/soap"
 )
 
 const (
@@ -79,6 +79,7 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse,
 	})
 
 	fmt.Println(*response.QueryResult.ResponseXml.Response.Connector.Data.Response.Status)
+
 	fmt.Println(err)
 
 	if err != nil {

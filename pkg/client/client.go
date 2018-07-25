@@ -3,6 +3,8 @@ package client
 import "github.com/satori/go.uuid"
 
 import (
+	"fmt"
+
 	"github.com/devimteam/creditinfo/pkg/connector"
 	"github.com/fiorix/wsdl2go/soap"
 	wsse "github.com/radoslav/soap"
@@ -15,7 +17,6 @@ const (
 
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
-	// GetServices get a services from consul
 	GetIndividualReport(nationalId string) (*QueryResponse, error)
 }
 
@@ -45,12 +46,13 @@ func NewCreditInfoService(username string,
 
 func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse, error) {
 	cli := client.getSoapClient()
+
 	messageId := generateUUID()
 	dataId := generateUUID()
 	connectorGuuid := connector.Guid(client.connectorId)
 
 	multiConnectorService := connector.NewMultiConnectorService(cli)
-	multiConnectorService.Query(&connector.Query{
+	response, err := multiConnectorService.Query(&connector.Query{
 		Request: &connector.MultiConnectorRequest{
 			MessageId: &messageId,
 			RequestXml: &connector.RequestXml{
@@ -76,14 +78,23 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse,
 		},
 	})
 
+	fmt.Println(*response.QueryResult.MessageId)
+	fmt.Println(err)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return &QueryResponse{}, nil
 }
 
 func (client creditInfo) getSoapClient() *soap.Client {
 	return &soap.Client{
-		URL:       client.getEndpoint(),
-		Header:    client.getWsseHeader(),
-		Namespace: connector.Namespace,
+		URL:                    client.getEndpoint(),
+		Header:                 client.getWsseHeader(),
+		Namespace:              connector.Namespace,
+		UserAgent:              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+		ExcludeActionNamespace: true,
 	}
 }
 

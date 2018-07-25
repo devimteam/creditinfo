@@ -293,14 +293,14 @@ type OperationMultiConnectorService_ListConnectors_OutputMessage struct {
 // OperationMultiConnectorService_Query_InputMessage was auto-generated
 // from WSDL.
 type OperationMultiConnectorService_Query_InputMessage struct {
-	Parameters *Query `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector Query,omitempty" json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	Parameters *Query `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector Query,omitempty" json:"Query,omitempty" yaml:"Query,omitempty"`
 }
 
 // Operation wrapper for Query.
 // OperationMultiConnectorService_Query_OutputMessage was auto-generated
 // from WSDL.
 type OperationMultiConnectorService_Query_OutputMessage struct {
-	Parameters *QueryResponse `xml:"parameters,omitempty" json:"parameters,omitempty" yaml:"parameters,omitempty"`
+	Parameters *QueryResponse `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector QueryResponse,omitempty" json:"QueryResponse,omitempty" yaml:"QueryResponse,omitempty"`
 }
 
 // Operation wrapper for Schema.
@@ -390,7 +390,7 @@ func (p *multiConnectorService) Query(parameters *Query) (*QueryResponse, error)
 	}
 
 	γ := struct {
-		OperationMultiConnectorService_Query_OutputMessage `xml:"QueryResponse"`
+		OperationMultiConnectorService_Query_OutputMessage `xml:"tns:QueryResponse"`
 	}{}
 	if err := p.cli.RoundTripWithAction("http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/Query", α, &γ); err != nil {
 		return nil, err

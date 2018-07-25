@@ -1,0 +1,11 @@
+[[constraint]]
+  name = "github.com/radoslav/soap"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/fiorix/wsdl2go"
+  branch = "master"
+
+[[constraint]]
+  name = "github.com/satori/go.uuid"
+  version = "1.2.0"

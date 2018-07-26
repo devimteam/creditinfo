@@ -1,30 +1,31 @@
-# Library for work with criditinfo
+package connector
 
-## Example code
-```go
-	username := "username"
-	password := "password"
-	connectorId := "acbbb979-3701-4f14-b6f6-c2a44177add6"
-	strategyId  := "289cdca1-d23b-436c-80d0-350f71a93fe6"
-	isLive := false
-	creditinfo := client.NewCreditInfoService(username, password, connectorId, strategyId, isLive)
-	nationalId := "12345678"
-	response, err := creditinfo.GetIndividualReport(nationalId)
-```
-## Methods
-- GetIndividualReport(nationalId)
+import "time"
 
-## Params
-| variable  |description   |
-| ------------ | ------------ |
-| username  | username  in criditinfo   |
-| password | password in criditinfo  |
-| connectorId |connector identification |
-| strategyId  |  strategy id given by creditinfo crb |
-|isLive   |  mode of operation |
+type MultiConnectorResponse struct {
+	MessageId     *Guid        `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
+	OperationCode *string      `xml:"OperationCode,omitempty" json:"OperationCode,omitempty" yaml:"OperationCode,omitempty"`
+	ResponseXml   *ResponseXml `xml:"ResponseXml,omitempty" json:"ResponseXml,omitempty" yaml:"ResponseXml,omitempty"`
+	Timestamp     *DateTime    `xml:"Timestamp,omitempty" json:"Timestamp,omitempty" yaml:"Timestamp,omitempty"`
+}
 
-## Return response
-```go
+type ResponseXml struct {
+	Response Response `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Messages/Response response,omitempty" json:"response,omitempty" yaml:"response,omitempty"`
+}
+
+type Response struct {
+	Connector ConnectorResponse `xml:"connector,omitempty"`
+}
+
+type ConnectorDataResponse struct {
+	// Unique ID of request to particular connector.
+	Id       *Guid           `xml:"id,attr,omitempty"`
+	Response *ResultResponse `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Connectors/INT/IdmStrategy/Response response,omitempty"`
+}
+
+type ConnectorResponse struct {
+	Data *ConnectorDataResponse `xml:"data,omitempty"`
+}
 
 type ResultResponse struct {
 	Status               string                `xml:"status,omitempty"`
@@ -39,7 +40,7 @@ type ResultResponse struct {
 	RepaymentInformation *RepaymentInformation `xml:"RepaymentInformation,omitempty"`
 	PolicyRules          *PolicyRule           `xml:"PolicyRules,omitempty"`
 	KenCb5Data           *KenCb5Data           `xml:"KenCb5_data,omitempty"`
-	Strategy			 *StrategyResponse	  `xml:"Strategy,omitempty"`
+	Strategy             *StrategyResponse     `xml:"Strategy,omitempty"`
 }
 type GeneralInformation struct {
 	SubjectIDNumber     string    `xml:"SubjectIDNumber,omitempty"`
@@ -128,7 +129,6 @@ type KenCb5Data struct {
 	ReportInfo          *ReportInfo          `xml:"ReportInfo,omitempty"`
 	SubjectInfoHistory  *SubjectInfoHistory  `xml:"SubjectInfoHistory,omitempty"`
 }
-
 
 type Record struct {
 	Date                 time.Time    `xml:"Date,omitempty"`
@@ -292,7 +292,6 @@ type Overall struct {
 	WorstOverdueBalance               *Balance  `xml:"WorstOverdueBalance,omitempty"`
 }
 
-
 type SectorInfo struct {
 	DebtorClosedContracts    int32    `xml:"DebtorClosedContracts,omitempty"`
 	DebtorCurrentBalanceSum  *Balance `xml:"DebtorCurrentBalanceSum,omitempty"`
@@ -327,7 +326,6 @@ type Involvement struct {
 	TypeOfRelation string       `xml:"TypeOfRelation,omitempty"`
 	ValidFrom      time.Time    `xml:"ValidFrom,omitempty"`
 }
-
 
 type Contact struct {
 	MobileTelephoneNumber string  `xml:"MobileTelephoneNumber,omitempty"`
@@ -404,7 +402,6 @@ type Disputes struct {
 	DisputeList *DisputeList        `xml:"DisputeList,omitempty"`
 	Summary     *DisputeListSummary `xml:"Summary,omitempty"`
 }
-
 
 type PaymentsProfile struct {
 	InstallmentAmountSum            *Balance `xml:"InstallmentAmountSum,omitempty"`
@@ -546,5 +543,3 @@ type StrategyResponse struct {
 	BeeStrategy  string `xml:"BeeStrategy,omitempty"`
 	TemplateName string `xml:"TemplateName,omitempty"`
 }
-
-```

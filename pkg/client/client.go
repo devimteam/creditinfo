@@ -3,11 +3,9 @@ package client
 import "github.com/satori/go.uuid"
 
 import (
-	"fmt"
-
+	wsse "github.com/casualcode/soap"
 	"github.com/devimteam/creditinfo/pkg/connector"
 	"github.com/fiorix/wsdl2go/soap"
-	wsse "github.com/casualcode/soap"
 )
 
 const (
@@ -17,7 +15,7 @@ const (
 
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
-	GetIndividualReport(nationalId string) (*QueryResponse, error)
+	GetIndividualReport(nationalId string) (*connector.ResultResponse, error)
 }
 
 type creditInfo struct {
@@ -44,7 +42,7 @@ func NewCreditInfoService(username string,
 	}
 }
 
-func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse, error) {
+func (client creditInfo) GetIndividualReport(nationalId string) (*connector.ResultResponse, error) {
 	cli := client.getSoapClient()
 
 	messageId := generateUUID()
@@ -68,7 +66,7 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse,
 								Cb5SearchParameters: connector.Cb5SearchParameters{
 									NationalId: &nationalId,
 								},
-								CustomFields: connector.CustomFields{},
+								CustomFields: &connector.CustomFields{},
 								Consent:      true,
 							},
 						},
@@ -78,15 +76,11 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*QueryResponse,
 		},
 	})
 
-	fmt.Println(*response.QueryResult.ResponseXml.Response.Connector.Data.Response.Status)
-
-	fmt.Println(err)
-
 	if err != nil {
 		return nil, err
 	}
 
-	return &QueryResponse{}, nil
+	return response, nil
 }
 
 func (client creditInfo) getSoapClient() *soap.Client {

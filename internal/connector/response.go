@@ -14,7 +14,7 @@ type ResponseXml struct {
 }
 
 type Response struct {
-	Connector ConnectorResponse `xml:"connector,omitempty"`
+	Connector *ConnectorResponse `xml:"connector,omitempty"`
 }
 
 type ConnectorDataResponse struct {
@@ -24,7 +24,8 @@ type ConnectorDataResponse struct {
 }
 
 type ConnectorResponse struct {
-	Data *ConnectorDataResponse `xml:"data,omitempty"`
+	Data  *ConnectorDataResponse `xml:"data,omitempty"`
+	Error *ErrorResponse         `xml:"error,omitempty"`
 }
 
 type ResultResponse struct {
@@ -88,10 +89,10 @@ type InquiriesAnalysis struct {
 }
 
 type BankingData struct {
-	Positive      int32 `xml:"Positive,omitempty"`
-	Negative      int32 `xml:"Negative,omitempty"`
-	Balance       int32 `xml:"Balance,omitempty"`
-	BalanceAtRisk int32 `xml:"BalanceAtRisk,omitempty"`
+	Positive      int32   `xml:"Positive,omitempty"`
+	Negative      int32   `xml:"Negative,omitempty"`
+	Balance       float64 `xml:"Balance,omitempty"`
+	BalanceAtRisk int32   `xml:"BalanceAtRisk,omitempty"`
 }
 
 type CurrentContracts struct {
@@ -542,4 +543,10 @@ type StrategyResponse struct {
 	Name         string `xml:"Name,omitempty"`
 	BeeStrategy  string `xml:"BeeStrategy,omitempty"`
 	TemplateName string `xml:"TemplateName,omitempty"`
+}
+
+type ErrorResponse struct {
+	Type    string `xml:"type,attr,omitempty"`
+	Id      string `xml:"id,attr,omitempty"`
+	Message string `xml:"message,omitempty"`
 }

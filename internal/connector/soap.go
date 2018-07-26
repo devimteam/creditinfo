@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/fiorix/wsdl2go/soap"
+	"github.com/pkg/errors"
 )
 
 // Namespace was auto-generated from WSDL.
@@ -29,11 +30,6 @@ type Duration time.Duration
 
 // Guid was auto-generated from WSDL.
 type Guid string
-
-// Error was auto-generated from WSDL.
-type Error struct {
-	Message *string `xml:"Message,omitempty" json:"Message,omitempty" yaml:"Message,omitempty"`
-}
 
 // FailedAuthentication was auto-generated from WSDL.
 type FailedAuthentication struct {
@@ -88,5 +84,9 @@ func (p *multiConnectorService) Query(parameters *Query) (*ResultResponse, error
 	if err := p.cli.RoundTripWithAction("http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/Query", intput, &out); err != nil {
 		return nil, err
 	}
+	if err := out.Parameters.QueryResult.ResponseXml.Response.Connector.Error; err != nil {
+		return nil, errors.New(err.Message)
+	}
+
 	return out.Parameters.QueryResult.ResponseXml.Response.Connector.Data.Response, nil
 }

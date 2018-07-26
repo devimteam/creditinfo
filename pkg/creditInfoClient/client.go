@@ -1,56 +1,41 @@
-package client
-
-import "github.com/satori/go.uuid"
+package creditInfoClient
 
 import (
 	wsse "github.com/casualcode/soap"
-	"github.com/devimteam/creditinfo/pkg/connector"
+	"github.com/devimteam/creditinfo/internal/connector"
 	"github.com/fiorix/wsdl2go/soap"
-)
-
-const (
-	TestEndpoint string = "https://idmtest.creditinfo.co.ke/MultiConnector.svc"
-	LiveEndpoint string = "https://idmtest.creditinfo.co.ke"
+	"github.com/satori/go.uuid"
 )
 
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
 	GetIndividualReport(nationalId string) (*connector.ResultResponse, error)
 }
-
-type creditInfo struct {
-	username    string
-	password    string
-	connectorId string
-	strategyId  string
-	isLive      bool
+type CreditInfoParams struct {
+	Username    string
+	Password    string
+	ConnectorId string
+	StrategyId  string
+	Endpoint    string
 }
 
-// NewClient returns a Client interface for given consul address
-func NewCreditInfoService(username string,
-	password string,
-	connectorId string,
-	strategyId string,
-	isLive bool,
-) Client {
+type creditInfo struct {
+	params CreditInfoParams
+}
+
+// NewClient returns a Client interface for given soap api creditinfo
+func NewCreditInfoClient(params CreditInfoParams) Client {
 	return &creditInfo{
-		username:    username,
-		password:    password,
-		connectorId: connectorId,
-		strategyId:  strategyId,
-		isLive:      isLive,
+		params: params,
 	}
 }
 
 func (client creditInfo) GetIndividualReport(nationalId string) (*connector.ResultResponse, error) {
-	cli := client.getSoapClient()
+	messageId := connector.Guid(uuid.NewV4().String())
+	dataId := connector.Guid(uuid.NewV4().String())
+	connectorGuuid := connector.Guid(client.params.ConnectorId)
 
-	messageId := generateUUID()
-	dataId := generateUUID()
-	connectorGuuid := connector.Guid(client.connectorId)
-
-	multiConnectorService := connector.NewMultiConnectorService(cli)
-	response, err := multiConnectorService.Query(&connector.Query{
+	return connector.NewMultiConnectorService(client.getSoapClient()).Query(&connector.Query{
 		Request: &connector.MultiConnectorRequest{
 			MessageId: &messageId,
 			RequestXml: &connector.RequestXml{
@@ -61,7 +46,7 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*connector.Resu
 							Id: &dataId,
 							Request: &connector.Request{
 								Strategy: &connector.Strategy{
-									Id: client.strategyId,
+									Id: client.params.StrategyId,
 								},
 								Cb5SearchParameters: connector.Cb5SearchParameters{
 									NationalId: &nationalId,
@@ -75,30 +60,15 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*connector.Resu
 			},
 		},
 	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return response, nil
 }
 
 func (client creditInfo) getSoapClient() *soap.Client {
 	return &soap.Client{
-		URL:                    client.getEndpoint(),
+		URL:                    client.params.Endpoint,
 		Header:                 client.getWsseHeader(),
 		Namespace:              connector.Namespace,
-		UserAgent:              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
 		ExcludeActionNamespace: true,
 	}
-}
-
-func (client creditInfo) getEndpoint() string {
-	if client.isLive {
-		return LiveEndpoint
-	}
-
-	return TestEndpoint
 }
 
 func (client creditInfo) getWsseHeader() *wsse.Header {
@@ -121,12 +91,8 @@ func (client creditInfo) getWsseHeader() *wsse.Header {
 		},
 	}
 
-	env.Header.WsseSecurity.UsernameToken.Username.Value = client.username
-	env.Header.WsseSecurity.UsernameToken.Password.Value = client.password
+	env.Header.WsseSecurity.UsernameToken.Username.Value = client.params.Username
+	env.Header.WsseSecurity.UsernameToken.Password.Value = client.params.Password
 
 	return env.Header
-}
-
-func generateUUID() connector.Guid {
-	return connector.Guid(uuid.NewV4().String())
 }

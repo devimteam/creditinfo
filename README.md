@@ -1,15 +1,20 @@
-# Library for work with criditinfo
+#Creditinfo
+Creditinfo is a Go client library for accessing the Creditinfo service SOAP API.
+
+- [website](https://ke.creditinfo.com/ "website")
+- [wsdl](https://idmtest.creditinfo.co.ke/MultiConnector.svc?singleWsdl "wsdl") 
 
 ## Example code
 ```go
-	username := "username"
-	password := "password"
-	connectorId := "acbbb979-3701-4f14-b6f6-c2a44177add6"
-	strategyId  := "289cdca1-d23b-436c-80d0-350f71a93fe6"
-	isLive := false
-	creditinfo := client.NewCreditInfoService(username, password, connectorId, strategyId, isLive)
-	nationalId := "12345678"
-	response, err := creditinfo.GetIndividualReport(nationalId)
+	params := creditInfoClient.CreditInfoParams{
+		Username:    "username",
+		Password:    "password",
+		ConnectorId: "acbbb979-3701-4f14-b6f6-c2a44177add6",
+		StrategyId:  "289cdca1-d23b-436c-80d0-350f71a93fe6",
+	}
+
+	creditInfo := creditInfoClient.NewCreditInfoClient(params)
+	response, err := creditInfo.GetIndividualReport("12345678")
 ```
 ## Methods
 - GetIndividualReport(nationalId)
@@ -89,7 +94,7 @@ type InquiriesAnalysis struct {
 type BankingData struct {
 	Positive      int32 `xml:"Positive,omitempty"`
 	Negative      int32 `xml:"Negative,omitempty"`
-	Balance       int32 `xml:"Balance,omitempty"`
+	Balance       float64 `xml:"Balance,omitempty"`
 	BalanceAtRisk int32 `xml:"BalanceAtRisk,omitempty"`
 }
 

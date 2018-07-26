@@ -21,12 +21,22 @@ type CreditInfoParams struct {
 
 type creditInfo struct {
 	params CreditInfoParams
+	svc    connector.MultiConnectorService
 }
 
 // NewClient returns a Client interface for given soap api creditinfo
 func NewCreditInfoClient(params CreditInfoParams) Client {
+
+	svc := connector.NewMultiConnectorService(&soap.Client{
+		URL:                    params.Endpoint,
+		Header:                 getWsseHeader(params.Username, params.Password),
+		Namespace:              connector.Namespace,
+		ExcludeActionNamespace: true,
+	})
+
 	return &creditInfo{
 		params: params,
+		svc:    svc,
 	}
 }
 
@@ -35,7 +45,7 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*connector.Resu
 	dataId := connector.Guid(uuid.NewV4().String())
 	connectorGuuid := connector.Guid(client.params.ConnectorId)
 
-	return connector.NewMultiConnectorService(client.getSoapClient()).Query(&connector.Query{
+	return client.svc.Query(&connector.Query{
 		Request: &connector.MultiConnectorRequest{
 			MessageId: &messageId,
 			RequestXml: &connector.RequestXml{
@@ -62,16 +72,7 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*connector.Resu
 	})
 }
 
-func (client creditInfo) getSoapClient() *soap.Client {
-	return &soap.Client{
-		URL:                    client.params.Endpoint,
-		Header:                 client.getWsseHeader(),
-		Namespace:              connector.Namespace,
-		ExcludeActionNamespace: true,
-	}
-}
-
-func (client creditInfo) getWsseHeader() *wsse.Header {
+func getWsseHeader(username string, password string) *wsse.Header {
 	env := &wsse.Envelope{
 		XmlnsSoapenv: "http://schemas.xmlsoap.org/soap/envelope/",
 		XmlnsUniv:    "http://www.example.pl/ws/test/universal",
@@ -91,8 +92,8 @@ func (client creditInfo) getWsseHeader() *wsse.Header {
 		},
 	}
 
-	env.Header.WsseSecurity.UsernameToken.Username.Value = client.params.Username
-	env.Header.WsseSecurity.UsernameToken.Password.Value = client.params.Password
+	env.Header.WsseSecurity.UsernameToken.Username.Value = username
+	env.Header.WsseSecurity.UsernameToken.Password.Value = password
 
 	return env.Header
 }

@@ -2,26 +2,16 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/casualcode/soap"
+  packages = ["."]
+  revision = "44eefde542392077c89292f04065d3e7d8852750"
+
+[[projects]]
+  branch = "master"
   name = "github.com/fiorix/wsdl2go"
   packages = ["soap"]
   revision = "57713bd6b8f5601000fca5e518a5013c4afbfae0"
-  version = "v1.4.6"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/justwatchcom/goat"
-  packages = [
-    ".",
-    "wsdl",
-    "xsd"
-  ]
-  revision = "1e20fa9d4f49fcbe40fa79b4848ee4a40da2861d"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/radoslav/soap"
-  packages = ["."]
-  revision = "7df68573407de3239e38f94b0e94ee6c6d44e80a"
 
 [[projects]]
   name = "github.com/satori/go.uuid"
@@ -29,15 +19,9 @@
   revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
   version = "v1.2.0"
 
-[[projects]]
-  name = "github.com/tiaguinho/gosoap"
-  packages = ["."]
-  revision = "eda446c474d0360cfd4a67108653f75239994b8f"
-  version = "v1.1.0"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "2188ec2528f74753694bbbabd34b443a86141639f360f7cdf728ee4914e54fa0"
+  inputs-digest = "f95b140d432b0fec0aa99b2030894d29258b75da4ce45c6d550ec080f8fdab23"
   solver-name = "gps-cdcl"
   solver-version = 1

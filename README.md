@@ -1,4 +1,4 @@
-#Creditinfo
+## Creditinfo
 Creditinfo is a Go client library for accessing the Creditinfo service SOAP API.
 
 - [website](https://ke.creditinfo.com/ "website")

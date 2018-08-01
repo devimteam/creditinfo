@@ -88,5 +88,9 @@ func (p *multiConnectorService) Query(parameters *Query) (*ResultResponse, error
 		return nil, errors.New(err.Message)
 	}
 
+	if status := out.Parameters.QueryResult.ResponseXml.Response.Connector.Data.Response.Status; status != "ok" {
+		return nil, errors.New(status)
+	}
+
 	return out.Parameters.QueryResult.ResponseXml.Response.Connector.Data.Response, nil
 }

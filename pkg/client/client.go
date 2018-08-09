@@ -1,4 +1,4 @@
-package сlient
+package client
 
 import (
 	wsse "github.com/casualcode/soap"

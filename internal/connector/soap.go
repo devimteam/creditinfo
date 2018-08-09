@@ -3,6 +3,8 @@ package connector
 import (
 	"time"
 
+	"github.com/devimteam/creditinfo/pkg/request"
+	"github.com/devimteam/creditinfo/pkg/response"
 	"github.com/fiorix/wsdl2go/soap"
 	"github.com/pkg/errors"
 )
@@ -19,7 +21,7 @@ func NewMultiConnectorService(cli *soap.Client) MultiConnectorService {
 // and defines interface for the remote service. Useful for testing.
 type MultiConnectorService interface {
 	// Query was auto-generated from WSDL.
-	Query(parameters *Query) (*ResultResponse, error)
+	Query(parameters *Query) (*response.ResultResponse, error)
 }
 
 // Char was auto-generated from WSDL.
@@ -41,12 +43,12 @@ type InProgress struct {
 
 // Query was auto-generated from WSDL.
 type Query struct {
-	Request *MultiConnectorRequest `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector request,omitempty" json:"request,omitempty" yaml:"request,omitempty"`
+	Request *request.MultiConnectorRequest `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector request,omitempty" json:"request,omitempty" yaml:"request,omitempty"`
 }
 
 // QueryResponse was auto-generated from WSDL.
 type QueryResponse struct {
-	QueryResult *MultiConnectorResponse `xml:"QueryResult,omitempty" json:"QueryResult,omitempty" yaml:"QueryResult,omitempty"`
+	QueryResult *response.MultiConnectorResponse `xml:"QueryResult,omitempty" json:"QueryResult,omitempty" yaml:"QueryResult,omitempty"`
 }
 
 // Operation wrapper for Query.
@@ -69,7 +71,7 @@ type multiConnectorService struct {
 }
 
 // Query was auto-generated from WSDL.
-func (p *multiConnectorService) Query(parameters *Query) (*ResultResponse, error) {
+func (p *multiConnectorService) Query(parameters *Query) (*response.ResultResponse, error) {
 	intput := struct {
 		OperationMultiConnectorService_Query_InputMessage `xml:"tns:Query"`
 	}{

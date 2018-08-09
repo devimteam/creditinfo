@@ -3,13 +3,15 @@ package creditInfoClient
 import (
 	wsse "github.com/casualcode/soap"
 	"github.com/devimteam/creditinfo/internal/connector"
+	"github.com/devimteam/creditinfo/pkg/request"
+	"github.com/devimteam/creditinfo/pkg/response"
 	"github.com/fiorix/wsdl2go/soap"
 	"github.com/satori/go.uuid"
 )
 
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
-	GetIndividualReport(nationalId string) (*connector.ResultResponse, error)
+	GetIndividualReport(nationalId string) (*response.ResultResponse, error)
 }
 type CreditInfoParams struct {
 	Username    string
@@ -40,28 +42,28 @@ func NewCreditInfoClient(params CreditInfoParams) Client {
 	}
 }
 
-func (client creditInfo) GetIndividualReport(nationalId string) (*connector.ResultResponse, error) {
-	messageId := connector.Guid(uuid.NewV4().String())
-	dataId := connector.Guid(uuid.NewV4().String())
-	connectorGuuid := connector.Guid(client.params.ConnectorId)
+func (client creditInfo) GetIndividualReport(nationalId string) (*response.ResultResponse, error) {
+	messageId := uuid.NewV4().String()
+	dataId := uuid.NewV4().String()
+	connectorGuuid := client.params.ConnectorId
 
 	return client.svc.Query(&connector.Query{
-		Request: &connector.MultiConnectorRequest{
+		Request: &request.MultiConnectorRequest{
 			MessageId: &messageId,
-			RequestXml: &connector.RequestXml{
-				RequestXmlItem: &connector.RequestXmlItem{
-					Connector: &connector.ConnectorRequest{
+			RequestXml: &request.RequestXml{
+				RequestXmlItem: &request.RequestXmlItem{
+					Connector: &request.ConnectorRequest{
 						Id: &connectorGuuid,
-						Data: &connector.ConnectorDataRequest{
+						Data: &request.ConnectorDataRequest{
 							Id: &dataId,
-							Request: &connector.Request{
-								Strategy: &connector.Strategy{
+							Request: &request.Request{
+								Strategy: &request.Strategy{
 									Id: client.params.StrategyId,
 								},
-								Cb5SearchParameters: connector.Cb5SearchParameters{
+								Cb5SearchParameters: request.Cb5SearchParameters{
 									NationalId: &nationalId,
 								},
-								CustomFields: &connector.CustomFields{},
+								CustomFields: &request.CustomFields{},
 								Consent:      true,
 							},
 						},

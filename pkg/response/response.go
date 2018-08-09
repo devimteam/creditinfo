@@ -1,12 +1,12 @@
-package connector
+package response
 
 import "time"
 
 type MultiConnectorResponse struct {
-	MessageId     *Guid        `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
+	MessageId     *string      `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
 	OperationCode *string      `xml:"OperationCode,omitempty" json:"OperationCode,omitempty" yaml:"OperationCode,omitempty"`
 	ResponseXml   *ResponseXml `xml:"ResponseXml,omitempty" json:"ResponseXml,omitempty" yaml:"ResponseXml,omitempty"`
-	Timestamp     *DateTime    `xml:"Timestamp,omitempty" json:"Timestamp,omitempty" yaml:"Timestamp,omitempty"`
+	Timestamp     *string      `xml:"Timestamp,omitempty" json:"Timestamp,omitempty" yaml:"Timestamp,omitempty"`
 }
 
 type ResponseXml struct {
@@ -19,7 +19,7 @@ type Response struct {
 
 type ConnectorDataResponse struct {
 	// Unique ID of request to particular connector.
-	Id       *Guid           `xml:"id,attr,omitempty"`
+	Id       *string         `xml:"id,attr,omitempty"`
 	Response *ResultResponse `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector/Connectors/INT/IdmStrategy/Response response,omitempty"`
 }
 

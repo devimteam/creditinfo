@@ -1,4 +1,4 @@
-package creditInfoClient
+package сlient
 
 import (
 	wsse "github.com/casualcode/soap"

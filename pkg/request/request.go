@@ -67,4 +67,6 @@ type Cb5SearchParameters struct {
 }
 
 type CustomFields struct {
+	Phone     *string    `xml:"Phone,omitempty" json:"Timeout,omitempty" yaml:"Timeout,omitempty"`
+	BirthDate *time.Time `xml:"BirthDate,omitempty" json:"BirthDate,omitempty" yaml:"BirthDate,omitempty"`
 }

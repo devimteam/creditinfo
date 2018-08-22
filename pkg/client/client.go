@@ -1,6 +1,8 @@
 package client
 
 import (
+	"time"
+
 	wsse "github.com/casualcode/soap"
 	"github.com/devimteam/creditinfo/internal/connector"
 	"github.com/devimteam/creditinfo/pkg/request"
@@ -11,7 +13,7 @@ import (
 
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
-	GetIndividualReport(nationalId string) (*response.ResultResponse, error)
+	GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error)
 }
 type CreditInfoParams struct {
 	Username    string
@@ -42,7 +44,7 @@ func NewCreditInfoClient(params CreditInfoParams) Client {
 	}
 }
 
-func (client creditInfo) GetIndividualReport(nationalId string) (*response.ResultResponse, error) {
+func (client creditInfo) GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error) {
 	messageId := uuid.NewV4().String()
 	dataId := uuid.NewV4().String()
 	connectorGuuid := client.params.ConnectorId
@@ -61,10 +63,13 @@ func (client creditInfo) GetIndividualReport(nationalId string) (*response.Resul
 									Id: client.params.StrategyId,
 								},
 								Cb5SearchParameters: request.Cb5SearchParameters{
-									NationalId: &nationalId,
+									NationalId: nationalId,
 								},
-								CustomFields: &request.CustomFields{},
-								Consent:      true,
+								CustomFields: &request.CustomFields{
+									Phone:     phone,
+									BirthDate: birthDate,
+								},
+								Consent: true,
 							},
 						},
 					},

@@ -48,6 +48,10 @@ func (client creditInfo) GetIndividualReport(nationalId *string, phone *string, 
 	messageId := uuid.NewV4().String()
 	dataId := uuid.NewV4().String()
 	connectorGuuid := client.params.ConnectorId
+	var birthDdateFormat string
+	if birthDate != nil {
+		birthDdateFormat = birthDate.Format("2006-01-02")
+	}
 
 	return client.svc.Query(&connector.Query{
 		Request: &request.MultiConnectorRequest{
@@ -67,7 +71,7 @@ func (client creditInfo) GetIndividualReport(nationalId *string, phone *string, 
 								},
 								CustomFields: &request.CustomFields{
 									MobilePhone: phone,
-									DateOfBirth: birthDate,
+									DateOfBirth: &birthDdateFormat,
 								},
 								Consent: true,
 							},

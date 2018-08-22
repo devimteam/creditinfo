@@ -67,7 +67,7 @@ func (client creditInfo) GetIndividualReport(nationalId *string, phone *string, 
 								},
 								CustomFields: &request.CustomFields{
 									MobilePhone: phone,
-									BirthDate:   birthDate,
+									DateOfBirth: birthDate,
 								},
 								Consent: true,
 							},

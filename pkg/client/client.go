@@ -14,6 +14,8 @@ import (
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
 	GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error)
+	GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error)
+	EndQuery(ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error)
 }
 type CreditInfoParams struct {
 	Username    string
@@ -44,42 +46,68 @@ func NewCreditInfoClient(params CreditInfoParams) Client {
 	}
 }
 
-func (client creditInfo) GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error) {
+func (client *creditInfo) GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (response *response.ResultResponse, err error) {
 	messageId := uuid.NewV4().String()
 	dataId := uuid.NewV4().String()
-	connectorGuuid := client.params.ConnectorId
+
 	var birthDdateFormat string
 	if birthDate != nil {
 		birthDdateFormat = birthDate.Format("2006-01-02")
 	}
 
 	return client.svc.Query(&connector.Query{
-		Request: &request.MultiConnectorRequest{
-			MessageId: &messageId,
-			RequestXml: &request.RequestXml{
-				RequestXmlItem: &request.RequestXmlItem{
-					Connector: &request.ConnectorRequest{
-						Id: &connectorGuuid,
-						Data: &request.ConnectorDataRequest{
-							Id: &dataId,
-							Request: &request.Request{
-								Strategy: &request.Strategy{
-									Id: client.params.StrategyId,
-								},
-								Cb5SearchParameters: request.Cb5SearchParameters{
-									NationalId: nationalId,
-								},
-								CustomFields: &request.CustomFields{
-									MobilePhone: phone,
-									DateOfBirth: &birthDdateFormat,
-								},
-								Consent: true,
+		Request: client.getMultiConnectorRequest(messageId, dataId, *nationalId, &request.CustomFields{
+			MobilePhone: phone,
+			DateOfBirth: &birthDdateFormat,
+		}),
+	})
+}
+
+func (client *creditInfo) getMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) *request.MultiConnectorRequest {
+	return &request.MultiConnectorRequest{
+		MessageId: &messageId,
+		RequestXml: &request.RequestXml{
+			RequestXmlItem: &request.RequestXmlItem{
+				Connector: &request.ConnectorRequest{
+					Id: &client.params.ConnectorId,
+					Data: &request.ConnectorDataRequest{
+						Id: &dataId,
+						Request: &request.Request{
+							Strategy: &request.Strategy{
+								Id: client.params.StrategyId,
 							},
+							Cb5SearchParameters: request.Cb5SearchParameters{
+								NationalId: &nationalId,
+							},
+							CustomFields: customFields,
+							Consent:      true,
 						},
 					},
 				},
 			},
 		},
+	}
+}
+func (client *creditInfo) GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error) {
+	messageId := uuid.NewV4().String()
+	dataId := uuid.NewV4().String()
+
+	var birthDdateFormat string
+	if birthDate != nil {
+		birthDdateFormat = birthDate.Format("2006-01-02")
+	}
+
+	return client.svc.BeginQuery(&connector.BeginQuery{
+		Request: client.getMultiConnectorRequest(messageId, dataId, *nationalId, &request.CustomFields{
+			MobilePhone: phone,
+			DateOfBirth: &birthDdateFormat,
+		}),
+	})
+}
+
+func (client *creditInfo) EndQuery(ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error) {
+	return client.svc.EndQuery(&connector.EndQuery{
+		Ticket: ticket,
 	})
 }
 

@@ -92,7 +92,7 @@ type BankingData struct {
 	Positive      int32   `xml:"Positive,omitempty"`
 	Negative      int32   `xml:"Negative,omitempty"`
 	Balance       float64 `xml:"Balance,omitempty"`
-	BalanceAtRisk int32   `xml:"BalanceAtRisk,omitempty"`
+	BalanceAtRisk float64 `xml:"BalanceAtRisk,omitempty"`
 }
 
 type CurrentContracts struct {

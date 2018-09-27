@@ -102,16 +102,16 @@ type CurrentContracts struct {
 }
 
 type PastDueInformation struct {
-	TotalCurrentPastDue                  int32 `xml:"TotalCurrentPastDue,omitempty"`
-	TotalCurrentDaysPastDue              int32 `xml:"TotalCurrentDaysPastDue,omitempty"`
-	MonthsWithoutArrearsLast12Months     int32 `xml:"MonthsWithoutArrearsLast12Months,omitempty"`
-	TotalMonthsWithHistoryLast12Months   int32 `xml:"TotalMonthsWithHistoryLast12Months,omitempty"`
-	PercMonthsWithoutArrearsLast12Months int32 `xml:"PercMonthsWithoutArrearsLast12Months,omitempty"`
+	TotalCurrentPastDue                  float32 `xml:"TotalCurrentPastDue,omitempty"`
+	TotalCurrentDaysPastDue              int32   `xml:"TotalCurrentDaysPastDue,omitempty"`
+	MonthsWithoutArrearsLast12Months     int32   `xml:"MonthsWithoutArrearsLast12Months,omitempty"`
+	TotalMonthsWithHistoryLast12Months   int32   `xml:"TotalMonthsWithHistoryLast12Months,omitempty"`
+	PercMonthsWithoutArrearsLast12Months float32 `xml:"PercMonthsWithoutArrearsLast12Months,omitempty"`
 }
 
 type RepaymentInformation struct {
-	TotalMonthlyPayment int32 `xml:"TotalMonthlyPayment,omitempty"`
-	ClosedContracts     int32 `xml:"ClosedContracts,omitempty"`
+	TotalMonthlyPayment float32 `xml:"TotalMonthlyPayment,omitempty"`
+	ClosedContracts     int32   `xml:"ClosedContracts,omitempty"`
 }
 
 type KenCb5Data struct {

@@ -17,6 +17,8 @@ type Client interface {
 	GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error)
 	GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error)
 	EndQuery(ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error)
+	RawRequest(parameters []byte) ([]byte, error)
+	GetRawMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) ([]byte, error)
 }
 type CreditInfoParams struct {
 	Username    string

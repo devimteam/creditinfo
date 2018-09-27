@@ -98,8 +98,14 @@ func (client *creditInfo) getMultiConnectorRequest(messageId, dataId, nationalId
 	}
 }
 func (client *creditInfo) GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error) {
-	messageId := uuid.NewV4().String()
-	dataId := uuid.NewV4().String()
+	messageId, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+	dataId, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
 
 	var birthDdateFormat string
 	if birthDate != nil {
@@ -107,7 +113,7 @@ func (client *creditInfo) GetIndividualReportBeginQuery(nationalId *string, phon
 	}
 
 	return client.svc.BeginQuery(&connector.BeginQuery{
-		Request: client.getMultiConnectorRequest(messageId, dataId, *nationalId, &request.CustomFields{
+		Request: client.getMultiConnectorRequest(messageId.String(), dataId.String(), *nationalId, &request.CustomFields{
 			MobilePhone: phone,
 			DateOfBirth: &birthDdateFormat,
 		}),

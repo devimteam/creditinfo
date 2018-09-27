@@ -209,7 +209,9 @@ func (p *multiConnectorService) RawRequest(parameters []byte) ([]byte, error) {
 			RawParams []byte `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector request,omitempty" json:"request,omitempty" yaml:"request,omitempty"`
 		} `xml:"tns:Query"`
 	}{
-		RawInputMessage: struct{ RawParams []byte }{RawParams: parameters},
+		RawInputMessage: struct {
+			RawParams []byte `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector request,omitempty" json:"request,omitempty" yaml:"request,omitempty"`
+		}{RawParams: parameters},
 	}
 	var output struct {
 		RawOutput []byte `xml:"tns:QueryResponse"`

@@ -1,6 +1,7 @@
 package client
 
 import (
+	"encoding/xml"
 	"time"
 
 	wsse "github.com/casualcode/soap"
@@ -8,7 +9,7 @@ import (
 	"github.com/devimteam/creditinfo/pkg/request"
 	"github.com/devimteam/creditinfo/pkg/response"
 	"github.com/fiorix/wsdl2go/soap"
-	"github.com/satori/go.uuid"
+	"github.com/gofrs/uuid"
 )
 
 //Soap Client provides an interface for getting data out creditinfo service
@@ -47,8 +48,14 @@ func NewCreditInfoClient(params CreditInfoParams) Client {
 }
 
 func (client *creditInfo) GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (response *response.ResultResponse, err error) {
-	messageId := uuid.NewV4().String()
-	dataId := uuid.NewV4().String()
+	messageId, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
+	dataId, err := uuid.NewV4()
+	if err != nil {
+		return nil, err
+	}
 
 	var birthDdateFormat string
 	if birthDate != nil {
@@ -56,7 +63,7 @@ func (client *creditInfo) GetIndividualReport(nationalId *string, phone *string,
 	}
 
 	return client.svc.Query(&connector.Query{
-		Request: client.getMultiConnectorRequest(messageId, dataId, *nationalId, &request.CustomFields{
+		Request: client.getMultiConnectorRequest(messageId.String(), dataId.String(), *nationalId, &request.CustomFields{
 			MobilePhone: phone,
 			DateOfBirth: &birthDdateFormat,
 		}),
@@ -109,6 +116,15 @@ func (client *creditInfo) EndQuery(ticket *connector.MultiConnectorTicket) (*res
 	return client.svc.EndQuery(&connector.EndQuery{
 		Ticket: ticket,
 	})
+}
+
+func (client *creditInfo) RawRequest(parameters []byte) ([]byte, error) {
+	return client.svc.RawRequest(parameters)
+}
+
+func (client *creditInfo) GetRawMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) ([]byte, error) {
+	x := client.getMultiConnectorRequest(messageId, dataId, nationalId, customFields)
+	return xml.Marshal(x)
 }
 
 func getWsseHeader(username string, password string) *wsse.Header {

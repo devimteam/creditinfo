@@ -1,6 +1,7 @@
 package connector
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/devimteam/creditinfo/pkg/request"
@@ -26,6 +27,7 @@ type MultiConnectorService interface {
 	EndQuery(parameters *EndQuery) (*response.ResultResponse, error)
 	// Query was auto-generated from WSDL.
 	Query(parameters *Query) (*response.ResultResponse, error)
+	RawRequest(parameters []byte) ([]byte, error)
 }
 
 // Char was auto-generated from WSDL.
@@ -199,4 +201,21 @@ func (p *multiConnectorService) EndQuery(parameters *EndQuery) (*response.Result
 	}
 
 	return out.Parameters.EndQueryResult.ResponseXml.Response.Connector.Data.Response, nil
+}
+
+func (p *multiConnectorService) RawRequest(parameters []byte) ([]byte, error) {
+	input := struct {
+		RawInputMessage struct {
+			RawParams []byte `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector request,omitempty" json:"request,omitempty" yaml:"request,omitempty"`
+		} `xml:"tns:Query"`
+	}{
+		RawInputMessage: struct{ RawParams []byte }{RawParams: parameters},
+	}
+	var output struct {
+		RawOutput []byte `xml:"tns:QueryResponse"`
+	}
+	if err := p.cli.RoundTripWithAction("http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/Query", input, &output); err != nil {
+		return nil, fmt.Errorf("round trip: %v", err)
+	}
+	return output.RawOutput, nil
 }

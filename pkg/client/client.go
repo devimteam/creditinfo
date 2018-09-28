@@ -132,7 +132,7 @@ func (client *creditInfo) RawRequest(parameters []byte) ([]byte, error) {
 
 func (client *creditInfo) GetRawMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) ([]byte, error) {
 	x := client.getMultiConnectorRequest(messageId, dataId, nationalId, customFields)
-	return xml.Marshal(x)
+	return xml.Marshal(&connector.Query{Request: x})
 }
 
 func getWsseHeader(username string, password string) *wsse.Header {

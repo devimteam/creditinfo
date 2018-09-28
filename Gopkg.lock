@@ -3,25 +3,88 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:d60fdea623cbe445d3831aed9b1a27f9cff2ba2dcb99c0866d79515b6b1b2e4f"
   name = "github.com/casualcode/soap"
   packages = ["."]
+  pruneopts = ""
   revision = "44eefde542392077c89292f04065d3e7d8852750"
 
 [[projects]]
   branch = "master"
+  digest = "1:cbd335c225831a82b1a4397bdf758657f22e7da38a8c574396bc15b5098b3290"
   name = "github.com/fiorix/wsdl2go"
   packages = ["soap"]
+  pruneopts = ""
   revision = "57713bd6b8f5601000fca5e518a5013c4afbfae0"
 
 [[projects]]
-  name = "github.com/satori/go.uuid"
+  digest = "1:10c7813de846fa10aad0ea9bca34a3c20815d51250e48ba1a3c3c7572184aea8"
+  name = "github.com/gofrs/uuid"
   packages = ["."]
-  revision = "f58768cc1a7a7e77a3bd49e98cdd21419399b6a3"
-  version = "v1.2.0"
+  pruneopts = ""
+  revision = "370558f003bfe29580cd0f698d8640daccdcc45c"
+  version = "v3.1.1"
+
+[[projects]]
+  digest = "1:a6ddc18062f456217783668182e8c5fa3ff73b279d143a96faae5c13db60dc76"
+  name = "github.com/l-vitaly/gounit"
+  packages = [
+    ".",
+    "gounitсonstraint",
+  ]
+  pruneopts = ""
+  revision = "d9d8b2917fdd427061d3dc23ae52fc29a2ed860f"
+  version = "v1.0.5"
+
+[[projects]]
+  digest = "1:9ea83adf8e96d6304f394d40436f2eb44c1dc3250d223b74088cc253a6cd0a1c"
+  name = "github.com/mattn/go-colorable"
+  packages = ["."]
+  pruneopts = ""
+  revision = "167de6bfdfba052fa6b2d3664c8f5272e23c9072"
+  version = "v0.0.9"
+
+[[projects]]
+  digest = "1:3140e04675a6a91d2a20ea9d10bdadf6072085502e6def6768361260aee4b967"
+  name = "github.com/mattn/go-isatty"
+  packages = ["."]
+  pruneopts = ""
+  revision = "6ca4dbf54d38eea1a992b3c722a76a5d1c4cb25c"
+  version = "v0.0.4"
+
+[[projects]]
+  branch = "master"
+  digest = "1:50416da10e189bc201e122e20078fb8e680a439cbdd24aaece06c434b4415b60"
+  name = "github.com/mgutz/ansi"
+  packages = ["."]
+  pruneopts = ""
+  revision = "9520e82c474b0a04dd04f8a40959027271bab992"
+
+[[projects]]
+  digest = "1:7365acd48986e205ccb8652cc746f09c8b7876030d53710ea6ef7d0bd0dcd7ca"
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  pruneopts = ""
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:630da6b685efd0155076e77c082a4fb297a5fd49a722d28fb4c728cd8656e060"
+  name = "golang.org/x/sys"
+  packages = ["unix"]
+  pruneopts = ""
+  revision = "dad3d9fb7b6e83d0f9ac8f54670f6334c3a287b4"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f95b140d432b0fec0aa99b2030894d29258b75da4ce45c6d550ec080f8fdab23"
+  input-imports = [
+    "github.com/casualcode/soap",
+    "github.com/fiorix/wsdl2go/soap",
+    "github.com/gofrs/uuid",
+    "github.com/l-vitaly/gounit",
+    "github.com/pkg/errors",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

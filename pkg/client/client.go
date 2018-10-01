@@ -1,6 +1,7 @@
 package client
 
 import (
+	"context"
 	"net/http"
 	"time"
 
@@ -8,15 +9,15 @@ import (
 	"github.com/devimteam/creditinfo/internal/connector"
 	"github.com/devimteam/creditinfo/pkg/request"
 	"github.com/devimteam/creditinfo/pkg/response"
-	"github.com/fiorix/wsdl2go/soap"
+	"github.com/devimteam/wsdl2go/soap"
 	"github.com/gofrs/uuid"
 )
 
 //Soap Client provides an interface for getting data out creditinfo service
 type Client interface {
-	GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error)
-	GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error)
-	EndQuery(ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error)
+	GetIndividualReport(ctx context.Context, nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error)
+	GetIndividualReportBeginQuery(ctx context.Context, nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error)
+	EndQuery(ctx context.Context, ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error)
 }
 
 type CreditInfoParams struct {
@@ -33,7 +34,7 @@ type creditInfo struct {
 }
 
 // NewClient returns a Client interface for given soap api creditinfo
-func NewCreditInfoClient(params CreditInfoParams, pre func(*http.Request), post func(*http.Response)) *creditInfo {
+func NewCreditInfoClient(params CreditInfoParams, pre func(context.Context, *http.Request), post func(context.Context, *http.Response)) *creditInfo {
 
 	svc := connector.NewMultiConnectorService(&soap.Client{
 		URL:                    params.Endpoint,
@@ -50,7 +51,7 @@ func NewCreditInfoClient(params CreditInfoParams, pre func(*http.Request), post 
 	}
 }
 
-func (client *creditInfo) GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (response *response.ResultResponse, err error) {
+func (client *creditInfo) GetIndividualReport(ctx context.Context, nationalId *string, phone *string, birthDate *time.Time) (response *response.ResultResponse, err error) {
 	messageId, err := uuid.NewV4()
 	if err != nil {
 		return nil, err
@@ -65,7 +66,7 @@ func (client *creditInfo) GetIndividualReport(nationalId *string, phone *string,
 		birthDdateFormat = birthDate.Format("2006-01-02")
 	}
 
-	return client.svc.Query(&connector.Query{
+	return client.svc.Query(ctx, &connector.Query{
 		Request: client.getMultiConnectorRequest(
 			messageId.String(),
 			dataId.String(),
@@ -103,7 +104,7 @@ func (client *creditInfo) getMultiConnectorRequest(messageId, dataId, nationalId
 		},
 	}
 }
-func (client *creditInfo) GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error) {
+func (client *creditInfo) GetIndividualReportBeginQuery(ctx context.Context, nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error) {
 	messageId, err := uuid.NewV4()
 	if err != nil {
 		return nil, err
@@ -118,7 +119,7 @@ func (client *creditInfo) GetIndividualReportBeginQuery(nationalId *string, phon
 		birthDdateFormat = birthDate.Format("2006-01-02")
 	}
 
-	return client.svc.BeginQuery(&connector.BeginQuery{
+	return client.svc.BeginQuery(ctx, &connector.BeginQuery{
 		Request: client.getMultiConnectorRequest(messageId.String(), dataId.String(), *nationalId, &request.CustomFields{
 			MobilePhone: phone,
 			DateOfBirth: &birthDdateFormat,
@@ -126,8 +127,8 @@ func (client *creditInfo) GetIndividualReportBeginQuery(nationalId *string, phon
 	})
 }
 
-func (client *creditInfo) EndQuery(ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error) {
-	return client.svc.EndQuery(&connector.EndQuery{
+func (client *creditInfo) EndQuery(ctx context.Context, ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error) {
+	return client.svc.EndQuery(ctx, &connector.EndQuery{
 		Ticket: ticket,
 	})
 }

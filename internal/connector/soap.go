@@ -1,12 +1,13 @@
 package connector
 
 import (
+	"context"
 	"fmt"
 	"time"
 
 	"github.com/devimteam/creditinfo/pkg/request"
 	"github.com/devimteam/creditinfo/pkg/response"
-	"github.com/fiorix/wsdl2go/soap"
+	"github.com/devimteam/wsdl2go/soap"
 	"github.com/pkg/errors"
 )
 
@@ -22,11 +23,11 @@ func NewMultiConnectorService(cli *soap.Client) MultiConnectorService {
 // and defines interface for the remote service. Useful for testing.
 type MultiConnectorService interface {
 	// BeginQuery was auto-generated from WSDL.
-	BeginQuery(parameters *BeginQuery) (*MultiConnectorTicket, error)
+	BeginQuery(ctx context.Context, parameters *BeginQuery) (*MultiConnectorTicket, error)
 	// EndQuery was auto-generated from WSDL.
-	EndQuery(parameters *EndQuery) (*response.ResultResponse, error)
+	EndQuery(ctx context.Context, parameters *EndQuery) (*response.ResultResponse, error)
 	// Query was auto-generated from WSDL.
-	Query(parameters *Query) (*response.ResultResponse, error)
+	Query(ctx context.Context, parameters *Query) (*response.ResultResponse, error)
 }
 
 // Char was auto-generated from WSDL.
@@ -129,7 +130,7 @@ type multiConnectorService struct {
 }
 
 // Query was auto-generated from WSDL.
-func (p *multiConnectorService) Query(parameters *Query) (*response.ResultResponse, error) {
+func (p *multiConnectorService) Query(ctx context.Context, parameters *Query) (*response.ResultResponse, error) {
 	intput := struct {
 		OperationMultiConnectorService_Query_InputMessage `xml:"tns:Query"`
 	}{
@@ -141,7 +142,7 @@ func (p *multiConnectorService) Query(parameters *Query) (*response.ResultRespon
 	out := struct {
 		OperationMultiConnectorService_Query_OutputMessage `xml:"tns:QueryResponse"`
 	}{}
-	if err := p.cli.RoundTripWithAction("http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/Query", intput, &out); err != nil {
+	if err := p.cli.RoundTripWithActionContext(ctx, "http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/Query", intput, &out); err != nil {
 		return nil, err
 	}
 	if err := out.Parameters.QueryResult.ResponseXml.Response.Connector.Error; err != nil {
@@ -156,7 +157,7 @@ func (p *multiConnectorService) Query(parameters *Query) (*response.ResultRespon
 }
 
 // BeginQuery was auto-generated from WSDL.
-func (p *multiConnectorService) BeginQuery(parameters *BeginQuery) (*MultiConnectorTicket, error) {
+func (p *multiConnectorService) BeginQuery(ctx context.Context, parameters *BeginQuery) (*MultiConnectorTicket, error) {
 	input := struct {
 		OperationMultiConnectorService_BeginQuery_InputMessage `xml:"tns:BeginQuery"`
 	}{
@@ -168,14 +169,14 @@ func (p *multiConnectorService) BeginQuery(parameters *BeginQuery) (*MultiConnec
 	out := struct {
 		OperationMultiConnectorService_BeginQuery_OutputMessage `xml:"tns:BeginQueryResponse"`
 	}{}
-	if err := p.cli.RoundTripWithAction("http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/BeginQuery", input, &out); err != nil {
+	if err := p.cli.RoundTripWithActionContext(ctx, "http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/BeginQuery", input, &out); err != nil {
 		return nil, err
 	}
 	return out.Parameters.BeginQueryResult, nil
 }
 
 // EndQuery was auto-generated from WSDL.
-func (p *multiConnectorService) EndQuery(parameters *EndQuery) (*response.ResultResponse, error) {
+func (p *multiConnectorService) EndQuery(ctx context.Context, parameters *EndQuery) (*response.ResultResponse, error) {
 	input := struct {
 		OperationMultiConnectorService_EndQuery_InputMessage `xml:"tns:EndQuery"`
 	}{
@@ -187,7 +188,7 @@ func (p *multiConnectorService) EndQuery(parameters *EndQuery) (*response.Result
 	out := struct {
 		OperationMultiConnectorService_EndQuery_OutputMessage `xml:"tns:EndQueryResponse"`
 	}{}
-	if err := p.cli.RoundTripWithAction("http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/EndQuery", input, &out); err != nil {
+	if err := p.cli.RoundTripWithActionContext(ctx, "http://creditinfo.com/schemas/2012/09/MultiConnector/MultiConnectorService/EndQuery", input, &out); err != nil {
 		return nil, err
 	}
 

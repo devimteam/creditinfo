@@ -3,8 +3,8 @@
   branch = "master"
 
 [[constraint]]
-  name = "github.com/fiorix/wsdl2go"
-  branch = "master"
+  name = "github.com/devimteam/wsdl2go"
+  revision = "7ed0da94ff4f278c98478381bdb7af3080d5be03"
 
 [[constraint]]
   name = "github.com/satori/go.uuid"

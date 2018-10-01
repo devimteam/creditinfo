@@ -10,12 +10,11 @@
   revision = "44eefde542392077c89292f04065d3e7d8852750"
 
 [[projects]]
-  branch = "master"
-  digest = "1:cbd335c225831a82b1a4397bdf758657f22e7da38a8c574396bc15b5098b3290"
-  name = "github.com/fiorix/wsdl2go"
+  digest = "1:4592dcb5f273a4f6a31e155ddd17520301764b29eb7a3aa472ba960877b61778"
+  name = "github.com/devimteam/wsdl2go"
   packages = ["soap"]
   pruneopts = ""
-  revision = "57713bd6b8f5601000fca5e518a5013c4afbfae0"
+  revision = "7ed0da94ff4f278c98478381bdb7af3080d5be03"
 
 [[projects]]
   digest = "1:10c7813de846fa10aad0ea9bca34a3c20815d51250e48ba1a3c3c7572184aea8"
@@ -81,7 +80,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/casualcode/soap",
-    "github.com/fiorix/wsdl2go/soap",
+    "github.com/devimteam/wsdl2go/soap",
     "github.com/gofrs/uuid",
     "github.com/l-vitaly/gounit",
     "github.com/pkg/errors",

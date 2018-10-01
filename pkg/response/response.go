@@ -1,6 +1,9 @@
 package response
 
-import "time"
+import (
+	"encoding/xml"
+	"time"
+)
 
 type MultiConnectorResponse struct {
 	MessageId     *string      `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
@@ -42,32 +45,49 @@ type ResultResponse struct {
 	PolicyRules          *PolicyRule           `xml:"PolicyRules,omitempty"`
 	KenCb5Data           *KenCb5Data           `xml:"KenCb5_data,omitempty"`
 	Strategy             *StrategyResponse     `xml:"Strategy,omitempty"`
+	Extract              *Extract              `xml:"Extract,omitempty"`
 }
 type GeneralInformation struct {
-	SubjectIDNumber     string    `xml:"SubjectIDNumber,omitempty"`
-	RequestDate         time.Time `xml:"RequestDate,omitempty"`
-	ReferenceNumber     string    `xml:"ReferenceNumber,omitempty"`
-	RecommendedDecision string    `xml:"RecommendedDecision,omitempty"`
-	BrokenRules         int32     `xml:"BrokenRules,omitempty"`
-	CreditLimit         int32     `xml:"CreditLimit,omitempty"`
+	SubjectIDNumber     *string    `xml:"SubjectIDNumber,omitempty"`
+	RequestDate         *time.Time `xml:"RequestDate,omitempty"`
+	ReferenceNumber     *string    `xml:"ReferenceNumber,omitempty"`
+	RecommendedDecision *string    `xml:"RecommendedDecision,omitempty"`
+	BrokenRules         *int32     `xml:"BrokenRules,omitempty"`
+	CreditLimit         *int32     `xml:"CreditLimit,omitempty"`
 }
 
 type PersonalInformation struct {
-	FullName         string    `xml:"FullName,omitempty"`
-	DateOfBirth      time.Time `xml:"DateOfBirth,omitempty"`
-	Age              uint32    `xml:"Age,omitempty"`
-	Gender           string    `xml:"Gender,omitempty"`
-	MaritalStatus    string    `xml:"MaritalStatus,omitempty"`
-	EmploymentStatus string    `xml:"EmploymentStatus,omitempty"`
+	FullName            *string    `xml:"FullName,omitempty"`
+	DateOfBirth         *time.Time `xml:"DateOfBirth,omitempty"`
+	Age                 *int64     `xml:"Age,omitempty"`
+	Gender              *string    `xml:"Gender,omitempty"`
+	MaritalStatus       *string    `xml:"MaritalStatus,omitempty"`
+	NumberOfDependents  *int64     `xml:"NumberOfDependents,omitempty"`
+	Education           *string    `xml:"Education,omitempty"`
+	EmploymentStatus    *string    `xml:"EmploymentStatus,omitempty"`
+	CompanyName         *string    `xml:"CompanyName,omitempty"`
+	DateOfEstablishment *string    `xml:"DateOfEstablishment,omitempty"`
+	YearsInOperation    *int64     `xml:"YearsInOperation,omitempty"`
+	LegalForm           *string    `xml:"LegalForm,omitempty"`
 }
 
 type ScoringAnalysis struct {
-	CIPScore             int32       `xml:"CIPScore,omitempty"`
-	CIPRiskGrade         string      `xml:"CIPRiskGrade,omitempty"`
-	MobileScore          int32       `xml:"MobileScore,omitempty"`
-	MobileScoreRiskGrade string      `xml:"MobileScoreRiskGrade,omitempty"`
-	Conclusion           string      `xml:"Conclusion,omitempty"`
-	PolicyRules          *PolicyRule `xml:"PolicyRules,omitempty"`
+	CIPScore               *int64                  `xml:"CIPScore,omitempty"`
+	CIPRiskGrade           *string                 `xml:"CIPRiskGrade,omitempty"`
+	MobileScore            *int64                  `xml:"MobileScore,omitempty"`
+	MobileScoreRiskGrade   *string                 `xml:"MobileScoreRiskGrade,omitempty"`
+	FactorsAffectingScores *FactorsAffectingScores `xml:"FactorsAffectingScores,omitempty"`
+	Conclusion             *string                 `xml:"Conclusion,omitempty"`
+	PolicyRules            *PolicyRule             `xml:"PolicyRules,omitempty"`
+}
+
+type FactorsAffectingScores struct {
+	Factor []Factor `xml:"Factor,omitempty"`
+}
+
+type Factor struct {
+	Code   string `xml:"code,attr,omitempty"`
+	Factor string `xml:"Factor,omitempty"`
 }
 
 type RuleItem struct {
@@ -81,54 +101,116 @@ type PolicyRule struct {
 }
 
 type InquiriesAnalysis struct {
-	TotalLast7Days       int32       `xml:"TotalLast7Days,omitempty"`
-	TotalLast1Month      int32       `xml:"TotalLast1Month,omitempty"`
-	NonBankingLast1Month int32       `xml:"NonBankingLast1Month,omitempty"`
+	TotalLast7Days       int64       `xml:"TotalLast7Days,omitempty"`
+	TotalLast1Month      int64       `xml:"TotalLast1Month,omitempty"`
+	NonBankingLast1Month int64       `xml:"NonBankingLast1Month,omitempty"`
 	PolicyRules          *PolicyRule `xml:"PolicyRules,omitempty"`
-	Conclusion           string      `xml:"Conclusion,omitempty"`
+	Conclusion           *string     `xml:"Conclusion,omitempty"`
 }
 
-type BankingData struct {
-	Positive      int32   `xml:"Positive,omitempty"`
-	Negative      int32   `xml:"Negative,omitempty"`
+type CurrentContracts struct {
+	CurrentBanking    *ContractsSummary `xml:"CurrentBanking,omitempty"`
+	CurrentNonBanking *ContractsSummary `xml:"CurrentNonBanking,omitempty"`
+	Total             *ContractsSummary `xml:"Total,omitempty"`
+}
+
+type ContractsSummary struct {
+	Positive      int64   `xml:"Positive,omitempty"`
+	Negative      int64   `xml:"Negative,omitempty"`
 	Balance       float64 `xml:"Balance,omitempty"`
 	BalanceAtRisk float64 `xml:"BalanceAtRisk,omitempty"`
 }
 
-type CurrentContracts struct {
-	CurrentBanking    *BankingData `xml:"CurrentBanking,omitempty"`
-	CurrentNonBanking *BankingData `xml:"CurrentNonBanking,omitempty"`
-	Total             *BankingData `xml:"Total,omitempty"`
-}
-
 type PastDueInformation struct {
-	TotalCurrentPastDue                  float32 `xml:"TotalCurrentPastDue,omitempty"`
-	TotalCurrentDaysPastDue              int32   `xml:"TotalCurrentDaysPastDue,omitempty"`
-	MonthsWithoutArrearsLast12Months     int32   `xml:"MonthsWithoutArrearsLast12Months,omitempty"`
-	TotalMonthsWithHistoryLast12Months   int32   `xml:"TotalMonthsWithHistoryLast12Months,omitempty"`
-	PercMonthsWithoutArrearsLast12Months float32 `xml:"PercMonthsWithoutArrearsLast12Months,omitempty"`
+	TotalCurrentPastDue                  *float64 `xml:"TotalCurrentPastDue,omitempty"`
+	TotalCurrentDaysPastDue              *int64   `xml:"TotalCurrentDaysPastDue,omitempty"`
+	WorstCurrentPastDue                  *float64 `xml:"WorstCurrentPastDue,omitempty"`
+	WorstCurrentDaysPastDue              *int64   `xml:"WorstCurrentDaysPastDue,omitempty"`
+	WorstPastDueLast12Months             *float64 `xml:"WorstPastDueLast12Months,omitempty"`
+	WorstPastDueDaysLast12Months         *int64   `xml:"WorstPastDueDaysLast12Months,omitempty"`
+	MonthsWithoutArrearsLast12Months     *int64   `xml:"MonthsWithoutArrearsLast12Months,omitempty"`
+	TotalMonthsWithHistoryLast12Months   *int64   `xml:"TotalMonthsWithHistoryLast12Months,omitempty"`
+	PercMonthsWithoutArrearsLast12Months *float64 `xml:"PercMonthsWithoutArrearsLast12Months,omitempty"`
 }
 
 type RepaymentInformation struct {
-	TotalMonthlyPayment float32 `xml:"TotalMonthlyPayment,omitempty"`
-	ClosedContracts     int32   `xml:"ClosedContracts,omitempty"`
+	TotalMonthlyPayment         *float64 `xml:"TotalMonthlyPayment,omitempty"`
+	NextContractMaturesInMonths *int64   `xml:"NextContractMaturesInMonths,omitempty"`
+	AllContractsMatureInMonths  *int64   `xml:"AllContractsMatureInMonths,omitempty"`
+	LastContractOpened          *Date    `xml:"LastContractOpened,omitempty"`
+	LastContractClosed          *Date    `xml:"LastContractClosed,omitempty"`
+	ClosedContracts             *int64   `xml:"ClosedContracts,omitempty"`
+}
+
+const xsdDateFormat = "2006-01-02"
+
+type Date time.Time
+
+func (d Date) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	t := time.Time(d).Format(xsdDateFormat)
+	return e.EncodeElement(t, start)
+}
+
+func (d *Date) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	var temp string
+	err := dec.DecodeElement(&temp, &start)
+	if err != nil {
+		return err
+	}
+	t, err := time.Parse(xsdDateFormat, temp)
+	if err != nil {
+		return err
+	}
+	*d = Date(t)
+	return nil
 }
 
 type KenCb5Data struct {
-	CIP                 *KenCb5DataCIP       `xml:"CIP,omitempty"`
-	CIQ                 *KenCb5DataCIQ       `xml:"CIQ,omitempty"`
-	ContractOverview    *ContractOverview    `xml:"ContractOverview,omitempty"`
-	ContractSummary     *ContractSummary     `xml:"ContractSummary,omitempty"`
-	Contracts           *Contracts           `xml:"Contracts,omitempty"`
-	CurrentRelations    *CurrentRelations    `xml:"CurrentRelations,omitempty"`
-	Dashboard           *Dashboard           `xml:"Dashboard,omitempty"`
-	Disputes            *Disputes            `xml:"Disputes,omitempty"`
-	Individual          *Individual          `xml:"Individual,omitempty"`
-	Inquiries           *Inquiries           `xml:"Inquiries,omitempty"`
-	Parameters          *Parameters          `xml:"Parameters,omitempty"`
-	PaymentIncidentList *PaymentIncidentList `xml:"PaymentIncidentList,omitempty"`
-	ReportInfo          *ReportInfo          `xml:"ReportInfo,omitempty"`
-	SubjectInfoHistory  *SubjectInfoHistory  `xml:"SubjectInfoHistory,omitempty"`
+	RawData []byte `xml:",innerxml"`
+}
+
+type Extract struct {
+	NationalId           *string    `xml:"NationalId,omitempty"`
+	Date                 *time.Time `xml:"Date,omitempty"`
+	Decision             *string    `xml:"Decision,omitempty"`
+	CreditLimit          *float64   `xml:"CreditLimit,omitempty"`
+	PotentialCreditLimit *float64   `xml:"PotentialCreditLimit,omitempty"`
+	MobileScore          *float64   `xml:"MobileScore,omitempty"`
+	MobileGrade          *string    `xml:"MobileGrade,omitempty"`
+	CIPScore             *float64   `xml:"CIPScore,omitempty"`
+	CIPGrade             *string    `xml:"CIPGrade,omitempty"`
+	SCR1Result           *string    `xml:"SCR1Result,omitempty"`
+	SCR1Parameter        *string    `xml:"SCR1Parameter,omitempty"`
+	SCR1Value            *string    `xml:"SCR1Value,omitempty"`
+	SCR3Result           *string    `xml:"SCR3Result,omitempty"`
+	SCR3Parameter        *string    `xml:"SCR3Parameter,omitempty"`
+	SCR3Value            *string    `xml:"SCR3Value,omitempty"`
+	INQ2Result           *string    `xml:"INQ2Result,omitempty"`
+	INQ2Parameter        *float64   `xml:"INQ2Parameter,omitempty"`
+	INQ2Value            *float64   `xml:"INQ2Value,omitempty"`
+	RSK2Result           *string    `xml:"RSK2Result,omitempty"`
+	RSK2Parameter        *float64   `xml:"RSK2Parameter,omitempty"`
+	RSK2Value            *float64   `xml:"RSK2Value,omitempty"`
+	RSK3Result           *string    `xml:"RSK3Result,omitempty"`
+	RSK3Parameter        *float64   `xml:"RSK3Parameter,omitempty"`
+	RSK3Value            *float64   `xml:"RSK3Value,omitempty"`
+	RSK4Result           *string    `xml:"RSK4Result,omitempty"`
+	RSK4Parameter        *float64   `xml:"RSK4Parameter,omitempty"`
+	RSK4Value            *float64   `xml:"RSK4Value,omitempty"`
+	RSK6Result           *string    `xml:"RSK6Result,omitempty"`
+	RSK6Parameter        *float64   `xml:"RSK6Parameter,omitempty"`
+	RSK6Value            *float64   `xml:"RSK6Value,omitempty"`
+	RSK7Result           *string    `xml:"RSK7Result,omitempty"`
+	RSK7Parameter        *float64   `xml:"RSK7Parameter,omitempty"`
+	RSK7Value            *float64   `xml:"RSK7Value,omitempty"`
+	RSK8Result           *string    `xml:"RSK8Result,omitempty"`
+	RSK8Parameter        *float64   `xml:"RSK8Parameter,omitempty"`
+	RSK8Value            *float64   `xml:"RSK8Value,omitempty"`
+	RSK11Result          *string    `xml:"RSK11Result,omitempty"`
+	RSK11Parameter       *float64   `xml:"RSK11Parameter,omitempty"`
+	RSK11Value           *float64   `xml:"RSK11Value,omitempty"`
+	RSK12Result          *string    `xml:"RSK12Result,omitempty"`
+	MobilePhone          *string    `xml:"MobilePhone,omitempty"`
 }
 
 type Record struct {

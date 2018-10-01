@@ -1,7 +1,7 @@
 package client
 
 import (
-	"encoding/xml"
+	"net/http"
 	"time"
 
 	wsse "github.com/casualcode/soap"
@@ -17,9 +17,8 @@ type Client interface {
 	GetIndividualReport(nationalId *string, phone *string, birthDate *time.Time) (*response.ResultResponse, error)
 	GetIndividualReportBeginQuery(nationalId *string, phone *string, birthDate *time.Time) (ticket *connector.MultiConnectorTicket, err error)
 	EndQuery(ticket *connector.MultiConnectorTicket) (*response.ResultResponse, error)
-	RawRequest(parameters []byte) ([]byte, error)
-	GetRawMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) ([]byte, error)
 }
+
 type CreditInfoParams struct {
 	Username    string
 	Password    string
@@ -34,13 +33,15 @@ type creditInfo struct {
 }
 
 // NewClient returns a Client interface for given soap api creditinfo
-func NewCreditInfoClient(params CreditInfoParams) Client {
+func NewCreditInfoClient(params CreditInfoParams, pre func(*http.Request), post func(*http.Response)) *creditInfo {
 
 	svc := connector.NewMultiConnectorService(&soap.Client{
 		URL:                    params.Endpoint,
 		Header:                 getWsseHeader(params.Username, params.Password),
 		Namespace:              connector.Namespace,
 		ExcludeActionNamespace: true,
+		Pre:                    pre,
+		Post:                   post,
 	})
 
 	return &creditInfo{
@@ -65,10 +66,15 @@ func (client *creditInfo) GetIndividualReport(nationalId *string, phone *string,
 	}
 
 	return client.svc.Query(&connector.Query{
-		Request: client.getMultiConnectorRequest(messageId.String(), dataId.String(), *nationalId, &request.CustomFields{
-			MobilePhone: phone,
-			DateOfBirth: &birthDdateFormat,
-		}),
+		Request: client.getMultiConnectorRequest(
+			messageId.String(),
+			dataId.String(),
+			*nationalId,
+			&request.CustomFields{
+				MobilePhone: phone,
+				DateOfBirth: &birthDdateFormat,
+			},
+		),
 	})
 }
 
@@ -124,15 +130,6 @@ func (client *creditInfo) EndQuery(ticket *connector.MultiConnectorTicket) (*res
 	return client.svc.EndQuery(&connector.EndQuery{
 		Ticket: ticket,
 	})
-}
-
-func (client *creditInfo) RawRequest(parameters []byte) ([]byte, error) {
-	return client.svc.RawRequest(parameters)
-}
-
-func (client *creditInfo) GetRawMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) ([]byte, error) {
-	x := client.getMultiConnectorRequest(messageId, dataId, nationalId, customFields)
-	return xml.Marshal(&connector.Query{Request: x})
 }
 
 func getWsseHeader(username string, password string) *wsse.Header {

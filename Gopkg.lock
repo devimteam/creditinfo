@@ -10,11 +10,11 @@
   revision = "44eefde542392077c89292f04065d3e7d8852750"
 
 [[projects]]
-  digest = "1:4592dcb5f273a4f6a31e155ddd17520301764b29eb7a3aa472ba960877b61778"
+  digest = "1:5c0fdc3abd05f58604f4faa6123f999a138865da63ccdd77bbae13304c15e122"
   name = "github.com/devimteam/wsdl2go"
   packages = ["soap"]
   pruneopts = ""
-  revision = "7ed0da94ff4f278c98478381bdb7af3080d5be03"
+  revision = "5c4e6c7ba9d9355bba952997eb0c639cb90f672e"
 
 [[projects]]
   digest = "1:10c7813de846fa10aad0ea9bca34a3c20815d51250e48ba1a3c3c7572184aea8"

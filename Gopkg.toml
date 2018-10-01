@@ -4,7 +4,7 @@
 
 [[constraint]]
   name = "github.com/devimteam/wsdl2go"
-  revision = "7ed0da94ff4f278c98478381bdb7af3080d5be03"
+  revision = "5c4e6c7ba9d9355bba952997eb0c639cb90f672e"
 
 [[constraint]]
   name = "github.com/satori/go.uuid"

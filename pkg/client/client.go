@@ -6,7 +6,7 @@ import (
 	"time"
 
 	wsse "github.com/casualcode/soap"
-	"github.com/devimteam/creditinfo/internal/connector"
+	"github.com/devimteam/creditinfo/pkg/connector"
 	"github.com/devimteam/creditinfo/pkg/request"
 	"github.com/devimteam/creditinfo/pkg/response"
 	"github.com/devimteam/wsdl2go/soap"

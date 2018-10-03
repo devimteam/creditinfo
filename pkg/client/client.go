@@ -61,9 +61,10 @@ func (client *creditInfo) GetIndividualReport(ctx context.Context, nationalId *s
 		return nil, err
 	}
 
-	var birthDdateFormat string
+	var bdate *request.Date
 	if birthDate != nil {
-		birthDdateFormat = birthDate.Format("2006-01-02")
+		t := request.Date(*birthDate)
+		bdate = &t
 	}
 
 	return client.svc.Query(ctx, &connector.Query{
@@ -73,7 +74,7 @@ func (client *creditInfo) GetIndividualReport(ctx context.Context, nationalId *s
 			*nationalId,
 			&request.CustomFields{
 				MobilePhone: phone,
-				DateOfBirth: &birthDdateFormat,
+				DateOfBirth: bdate,
 			},
 		),
 	})
@@ -114,15 +115,16 @@ func (client *creditInfo) GetIndividualReportBeginQuery(ctx context.Context, nat
 		return nil, err
 	}
 
-	var birthDdateFormat string
+	var bdate *request.Date
 	if birthDate != nil {
-		birthDdateFormat = birthDate.Format("2006-01-02")
+		t := request.Date(*birthDate)
+		bdate = &t
 	}
 
 	return client.svc.BeginQuery(ctx, &connector.BeginQuery{
 		Request: client.getMultiConnectorRequest(messageId.String(), dataId.String(), *nationalId, &request.CustomFields{
 			MobilePhone: phone,
-			DateOfBirth: &birthDdateFormat,
+			DateOfBirth: bdate,
 		}),
 	})
 }

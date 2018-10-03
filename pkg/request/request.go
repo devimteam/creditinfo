@@ -68,5 +68,28 @@ type Cb5SearchParameters struct {
 
 type CustomFields struct {
 	MobilePhone *string `xml:"MobilePhone,omitempty" json:"Timeout,omitempty" yaml:"Timeout,omitempty"`
-	DateOfBirth *string `xml:"DateOfBirth,omitempty" json:"DateOfBirth,omitempty" yaml:"DateOfBirth,omitempty"`
+	DateOfBirth *Date   `xml:"DateOfBirth,omitempty" json:"DateOfBirth,omitempty" yaml:"DateOfBirth,omitempty"`
+}
+
+const xsdDateFormat = "2006-01-02"
+
+type Date time.Time
+
+func (d Date) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	t := time.Time(d).Format(xsdDateFormat)
+	return e.EncodeElement(t, start)
+}
+
+func (d *Date) UnmarshalXML(dec *xml.Decoder, start xml.StartElement) error {
+	var temp string
+	err := dec.DecodeElement(&temp, &start)
+	if err != nil {
+		return err
+	}
+	t, err := time.Parse(xsdDateFormat, temp)
+	if err != nil {
+		return err
+	}
+	*d = Date(t)
+	return nil
 }

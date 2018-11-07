@@ -52,9 +52,11 @@ func (client creditInfo) GetIndividualReport(nationalId *string, phone *string, 
 	if birthDate != nil {
 		birthDdateFormat = birthDate.Format("2006-01-02")
 	}
+	timeout := time.Duration(5 * time.Minute)
 
 	return client.svc.Query(&connector.Query{
 		Request: &request.MultiConnectorRequest{
+			Timeout:   &timeout,
 			MessageId: &messageId,
 			RequestXml: &request.RequestXml{
 				RequestXmlItem: &request.RequestXmlItem{

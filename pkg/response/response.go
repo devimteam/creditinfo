@@ -340,7 +340,7 @@ type MainAddress struct {
 	District    string `xml:"District,omitempty"`
 	Region      string `xml:"Region,omitempty"`
 	PlotNumber  string `xml:"PlotNumber,omitempty"`
-	PostalCode  int32  `xml:"PostalCode,omitempty"`
+	PostalCode  string `xml:"PostalCode,omitempty"`
 	Street      string `xml:"Street,omitempty"`
 	Town        string `xml:"Town,omitempty"`
 }

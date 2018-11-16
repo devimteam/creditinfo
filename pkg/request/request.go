@@ -26,6 +26,11 @@ func NilDuration(d *time.Duration) *Duration {
 	return &x
 }
 
+func (d Duration) MarshalXML(e *xml.Encoder, start xml.StartElement) error {
+	t := time.Duration(d).String()
+	return e.EncodeElement(t, start)
+}
+
 // MultiConnectorRequest was auto-generated from WSDL.
 type MultiConnectorRequest struct {
 	MessageId     *string     `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`

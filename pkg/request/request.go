@@ -1,20 +1,38 @@
 package request
 
 import (
+	"bytes"
 	"encoding/xml"
+	"strconv"
 	"time"
 )
 
 // DateTime in WSDL format.
 type DateTime string
+type Duration time.Duration
+
+func (d Duration) String() string {
+	buf := bytes.NewBufferString("PT")
+	buf.WriteString(strconv.Itoa(int(time.Duration(d).Seconds())))
+	buf.WriteString("S")
+	return buf.String()
+}
+
+func NilDuration(d *time.Duration) *Duration {
+	if d == nil {
+		return nil
+	}
+	x := Duration(*d)
+	return &x
+}
 
 // MultiConnectorRequest was auto-generated from WSDL.
 type MultiConnectorRequest struct {
-	MessageId     *string        `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
-	OperationCode *string        `xml:"OperationCode,omitempty" json:"OperationCode,omitempty" yaml:"OperationCode,omitempty"`
-	RequestXml    *RequestXml    `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector RequestXml,omitempty" json:"RequestXml,omitempty" yaml:"RequestXml,omitempty"`
-	ScheduledTime *DateTime      `xml:"ScheduledTime,omitempty" json:"ScheduledTime,omitempty" yaml:"ScheduledTime,omitempty"`
-	Timeout       *time.Duration `xml:"Timeout,omitempty" json:"Timeout,omitempty" yaml:"Timeout,omitempty"`
+	MessageId     *string     `xml:"MessageId,omitempty" json:"MessageId,omitempty" yaml:"MessageId,omitempty"`
+	OperationCode *string     `xml:"OperationCode,omitempty" json:"OperationCode,omitempty" yaml:"OperationCode,omitempty"`
+	RequestXml    *RequestXml `xml:"http://creditinfo.com/schemas/2012/09/MultiConnector RequestXml,omitempty" json:"RequestXml,omitempty" yaml:"RequestXml,omitempty"`
+	ScheduledTime *DateTime   `xml:"ScheduledTime,omitempty" json:"ScheduledTime,omitempty" yaml:"ScheduledTime,omitempty"`
+	Timeout       *Duration   `xml:"Timeout,omitempty" json:"Timeout,omitempty" yaml:"Timeout,omitempty"`
 }
 
 type RequestXmlItem struct {

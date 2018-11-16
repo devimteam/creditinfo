@@ -26,6 +26,7 @@ type CreditInfoParams struct {
 	ConnectorId string
 	StrategyId  string
 	Endpoint    string
+	Timeout     *time.Duration
 }
 
 type creditInfo struct {
@@ -83,6 +84,7 @@ func (client *creditInfo) GetIndividualReport(ctx context.Context, nationalId *s
 func (client *creditInfo) getMultiConnectorRequest(messageId, dataId, nationalId string, customFields *request.CustomFields) *request.MultiConnectorRequest {
 	return &request.MultiConnectorRequest{
 		MessageId: &messageId,
+		Timeout:   request.NilDuration(client.params.Timeout),
 		RequestXml: &request.RequestXml{
 			RequestXmlItem: &request.RequestXmlItem{
 				Connector: &request.ConnectorRequest{
